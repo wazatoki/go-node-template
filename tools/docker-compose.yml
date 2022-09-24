@@ -1,0 +1,33 @@
+version: '3'
+
+services:
+  tmp_project_name:
+    container_name: tmp_project_name
+    build: 
+      dockerfile: "Dockerfile"
+      context: "execution_environment"
+    volumes:
+      - type: bind
+        source: ../backend/build
+        target: /workspace
+    ports:
+      - "8080:8080"
+    tty: true
+    depends_on: 
+      - tmp_project_name_postgres_db
+      - tmp_project_name_couch_db
+  tmp_project_name_postgres_db:
+    image: postgres:11.3
+    container_name: tmp_project_name_postgres_db
+    environment: 
+      POSTGRES_USER: "tmp_project_name"
+      POSTGRES_PASSWORD: "tmp_project_name"
+      POSTGRES_DB: "tmp_project_namedb"
+  tmp_project_name_couch_db:
+    image: couchdb:3.2
+    container_name: tmp_project_name_couch_db
+    ports: 
+      - "5984:5984"
+    environment: 
+      COUCHDB_USER: "tmp_project_name"
+      COUCHDB_PASSWORD: "tmp_project_name"
